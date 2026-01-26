@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameState { MainMenu, Playing, Paused, Passed, GameOver }
 public class DotAreaGameManager0113 : MonoBehaviour
 {
     public List<LevelData> levels;
@@ -31,8 +32,13 @@ public class DotAreaGameManager0113 : MonoBehaviour
     {
         if(state == GameState.Passed)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.anyKeyDown)
             {
+                if (currentLevelIndex >= levels.Count)
+                {
+                    game.UI.ShowThanksMenu();
+                    return;
+                }
                 NextLevel();
             }
         }
@@ -46,7 +52,11 @@ public class DotAreaGameManager0113 : MonoBehaviour
     public void LostLife()
     {
         playerLife--;
-        if (playerLife <= 0) state = GameState.GameOver;
+        if (playerLife <= 0)
+        {
+            state = GameState.GameOver;
+            game.UI.ShowFailMenu();
+        }
     }
 
     public bool CheckPassed(float percent)
@@ -60,25 +70,26 @@ public class DotAreaGameManager0113 : MonoBehaviour
         game.UI.ShowAchieveTxt(achievedCount);
     }
     public void GamePass()
-    {
+    {        
         state = GameState.Passed;
-        game.UI.ShowPassedMenu();
-    }
-
-    public void NextLevel()
-    {
         currentLevelIndex++;
         if (currentLevelIndex >= levels.Count)
         {
             game.UI.ShowClearMenu();
             return;
-        }
+        }        
+        game.UI.ShowPassedMenu();
+    }
+
+    public void NextLevel()
+    {        
+        
         state = GameState.Playing;
         game.UI.HidePassedMenu();
-        ReSetLevel();
+        ResetLevel();
         game.LoadLevel();
     }
-    public void ReSetLevel()
+    public void ResetLevel()
     {
         playerLife = 3;
         game.grid.filledCount = 0;

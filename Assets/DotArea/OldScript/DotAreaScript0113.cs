@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public enum GameState { MainMenu,Playing,Paused,Passed,GameOver}
+
 
 
 

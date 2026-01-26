@@ -38,10 +38,10 @@ public class PlayerCtrl0113 : MonoBehaviour
     //管理輸入移動方向
     void HandleInput()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow)) StartMove(Vector2Int.up);
-        if (Input.GetKeyDown(KeyCode.DownArrow)) StartMove(Vector2Int.down);
-        if (Input.GetKeyDown(KeyCode.RightArrow)) StartMove(Vector2Int.right);
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) StartMove(Vector2Int.left);
+        if (Input.GetKeyDown(KeyCode.UpArrow)) MoveUp();
+        if (Input.GetKeyDown(KeyCode.DownArrow)) MoveDown();
+        if (Input.GetKeyDown(KeyCode.RightArrow)) MoveRight();
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveLeft();
     }
     void StartMove(Vector2Int dir)
     {
@@ -119,4 +119,41 @@ public class PlayerCtrl0113 : MonoBehaviour
 
         game.UI.ShowLifeTxt(gameMgr.playerLife);
     }
+
+
+    //======玩家移動======
+    void MoveUp()
+    {
+        StartMove(Vector2Int.up);
+    }
+    void MoveDown()
+    {
+        StartMove(Vector2Int.down);
+    }
+    void MoveLeft()
+    {
+        StartMove(Vector2Int.left);
+    }
+    void MoveRight()
+    {
+        StartMove(Vector2Int.right);
+    }
+
+    public static System.Action OnMoveLeft,OnMoveRight,OnMoveUp,OnMoveDown;
+    private void OnEnable()
+    {
+        OnMoveUp += MoveUp;
+        OnMoveDown += MoveDown;
+        OnMoveLeft += MoveLeft;
+        OnMoveRight += MoveRight;
+    }
+    private void OnDisable()
+    {
+        OnMoveUp -= MoveUp;
+        OnMoveDown -= MoveDown;
+        OnMoveLeft -= MoveLeft;
+        OnMoveRight -= MoveRight;
+    }
+   
+    
 }
