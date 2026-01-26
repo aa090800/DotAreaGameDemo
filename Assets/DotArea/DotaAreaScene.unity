@@ -2352,7 +2352,7 @@ MonoBehaviour:
       startDir: {x: -1, y: -1}
     - startPos: {x: 37, y: 45}
       startDir: {x: -1, y: -1}
-  currentLevelIndex: 1
+  currentLevelIndex: 0
   state: 0
   achievedCount: 0
   playerLife: 3
