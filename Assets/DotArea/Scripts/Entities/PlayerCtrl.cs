@@ -6,6 +6,7 @@ public class PlayerCtrl0113 : MonoBehaviour
 {
     bool Moving;
     bool Drawing;
+    bool MovingOnLine;
     Vector2Int MoveWay;
     public Vector2Int StartDrawingPos;
     public Vector2Int gridPos;//player的gridpos
@@ -42,11 +43,17 @@ public class PlayerCtrl0113 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.DownArrow)) MoveDown();
         if (Input.GetKeyDown(KeyCode.RightArrow)) MoveRight();
         if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveLeft();
+
     }
     void StartMove(Vector2Int dir)
     {
+        if (Moving)
+        {
+            if (!MovingPressBack(MoveWay, dir)) return;
+        }
         MoveWay = dir;
         Moving = true;
+        
     }
 
     //玩家移動邏輯
@@ -66,38 +73,59 @@ public class PlayerCtrl0113 : MonoBehaviour
 
         if (!grid.IsInGrid(target))
         {
-            Moving = false;            
+            Moving = false;
+            MovingOnLine = false;
             return;
         }
 
 
-        var state = grid.gridData[target.x, target.y];
+        var nextGridState = grid.gridData[target.x, target.y];
+
+        //新增黑色可以移動:cellstate新增wall
 
         //自撞line
-        if (state == CellState.Line)
+        if (nextGridState == CellState.Line)
         {
             TouchLine(StartDrawingPos);
             return;
         }
 
+        //改成: wall移動時下一個是empty和filled停止(moving)
+
         //撞牆或線上移動
-        if (state == CellState.Filled) 
+        if (nextGridState == CellState.Wall) 
         {
+            MovingOnLine = true;
             gridPos = target;
             transform.position = grid.GridToWorldPos(gridPos);
 
+            
             if (Drawing)
             {
                 Drawing = false;
                 grid.finishDraw(game.GetEnemyGridPos());
 
+                Moving = false;
+                MovingOnLine = false;
             }
+        }
+        //filled不能走
+        if (nextGridState == CellState.Filled)
+        {
+            MovingOnLine = false;
             Moving = false;
+            return;
         }
 
-        //起步畫線和移動中
-        if (state == CellState.Empty)
+            //起步畫線和移動中
+        if (nextGridState == CellState.Empty)
         {
+            if (MovingOnLine&& Moving)
+            {
+                MovingOnLine = false;
+                Moving = false;
+                return;
+            }
             Drawing = true;
             grid.gridData[target.x, target.y] = CellState.Line;
             grid.DrawCell(target, Color.gray);
@@ -114,6 +142,7 @@ public class PlayerCtrl0113 : MonoBehaviour
         transform.position = grid.GridToWorldPos(gridPos);
 
         Moving = false;
+        MovingOnLine = false;
         gameMgr.LostLife();
         grid.ClearAllLine();
 
@@ -154,6 +183,29 @@ public class PlayerCtrl0113 : MonoBehaviour
         OnMoveLeft -= MoveLeft;
         OnMoveRight -= MoveRight;
     }
-   
+    bool MovingPressBack(Vector2Int Nowdir, Vector2Int Inpdir)
+    {
+        if (Nowdir == Vector2Int.up)
+        {
+            if (Inpdir==Vector2.down) return false;
+            else return true;
+        }
+        else if (Nowdir == Vector2Int.down)
+        {
+            if (Inpdir == Vector2.up) return false;
+            else return true;
+        }
+        else if (Nowdir == Vector2Int.right)
+        {
+            if (Inpdir == Vector2.left) return false;
+            else return true;
+        }
+        else if (Nowdir == Vector2Int.left)
+        {
+            if (Inpdir == Vector2.right) return false;
+            else return true;
+        }
+        else return true;
+    }
     
 }

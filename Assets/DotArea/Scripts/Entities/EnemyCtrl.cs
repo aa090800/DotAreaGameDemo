@@ -41,12 +41,12 @@ public class EnemyCtrl0113 : MonoBehaviour
         Vector2Int target = gridPos + MoveWay;
 
         Vector2Int checkX = new Vector2Int(MoveWay.x + gridPos.x, gridPos.y);
-        if (grid.gridData[checkX.x, checkX.y] == CellState.Filled && grid.IsInGrid(checkX))
+        if (grid.gridData[checkX.x, checkX.y] == CellState.Wall && grid.IsInGrid(checkX))
         {
             MoveWay.x *= -1;
         }
         Vector2Int checkY = new Vector2Int(gridPos.x, MoveWay.y + gridPos.y);
-        if (grid.gridData[checkY.x, checkY.y] == CellState.Filled && grid.IsInGrid(checkY))
+        if (grid.gridData[checkY.x, checkY.y] == CellState.Wall && grid.IsInGrid(checkY))
         {
             MoveWay.y *= -1;
         }

@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum CellState { Empty, Filled, Line } 
+public enum CellState { Empty, Filled, Line, Wall }
+
+//line->wall 初始黑線也是wall
+
 
 public class DotAreaGridManager0113 : MonoBehaviour
 {
@@ -25,8 +28,10 @@ public class DotAreaGridManager0113 : MonoBehaviour
     {
         width = data.width;
         height = data.height;
-        
+               
+
         gameMgr = DotAreaGameManager0113.Instance;
+        gameMgr.passRequirement = data.passPercent;
 
         StartPos = new Vector2(-cellSize * width / 2, -cellSize * height / 2);
         gridData = new CellState[width, height];
@@ -38,11 +43,11 @@ public class DotAreaGridManager0113 : MonoBehaviour
             for (int j = 0; j < height; j++)
             {
                 //最外圈設為filled 其他裡面為Empty
-                if (i == 0 || i == width - 1) gridData[i, j] = CellState.Filled;
-                else if (j == 0 || j == height - 1) gridData[i, j] = CellState.Filled;
+                if (i == 0 || i == width - 1) gridData[i, j] = CellState.Wall;
+                else if (j == 0 || j == height - 1) gridData[i, j] = CellState.Wall;
                 else gridData[i, j] = CellState.Empty;
 
-                if (gridData[i, j] == CellState.Filled)
+                if (gridData[i, j] == CellState.Wall)
                 {
                     DrawCell(new Vector2Int(i, j), Color.black);
                     _temptotal++;
@@ -81,6 +86,7 @@ public class DotAreaGridManager0113 : MonoBehaviour
     {
         return gridPos.x >= 0 && gridPos.x < width && gridPos.y >= 0 && gridPos.y < height;
     }
+
 
     //自撞或敵人撞到時 清除line的部分
     public void ClearAllLine()
@@ -134,7 +140,7 @@ public class DotAreaGridManager0113 : MonoBehaviour
                 Destroy(go);
                 SpawnedCell.Remove(pos);
 
-                gridData[pos.x, pos.y] = CellState.Filled;
+                gridData[pos.x, pos.y] = CellState.Wall;
                 DrawCell(pos, Color.black);
 
                 filledCount++;
@@ -173,7 +179,7 @@ public class DotAreaGridManager0113 : MonoBehaviour
         //上色
         Color[] colors = { Color.blue, Color.red, Color.white, Color.yellow, Color.cyan, Color.green, Color.magenta, };
         Color GetRandomColor() { return colors[Random.Range(0, colors.Length)]; }
-        Color color = GetRandomColor();
+        Color color = GetRandomColor()*new Color(0.5f,0.5f,0.5f);
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
@@ -194,7 +200,7 @@ public class DotAreaGridManager0113 : MonoBehaviour
         foreach(var kv in SpawnedCell)
         {
             Vector2Int pos = kv.Key;
-            if(gridData[pos.x,pos.y]==CellState.Filled|| gridData[pos.x, pos.y] == CellState.Line)
+            if (gridData[pos.x, pos.y] == CellState.Filled || gridData[pos.x, pos.y] == CellState.Line || gridData[pos.x, pos.y] == CellState.Wall)
             {
                 cells.Add(pos);
             }
