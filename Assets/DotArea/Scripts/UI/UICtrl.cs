@@ -17,23 +17,29 @@ public class DotAreaUICtrl0113 : MonoBehaviour
     public GameObject startPanel;
     public GameObject pausedPanel;
     public GameObject passedPanel;
+    public GameObject passedText;
     public GameObject clearPanel;
     public GameObject failedPanel;
 
     public GameObject ArrowPanel;
     public GameObject ThanksPanel;
 
-    public TextMeshProUGUI lifeTxt;
+    //玩家資料UI
+    public GameObject lifePanel;
+    public GameObject percentPanel;
     public TextMeshProUGUI percentTxt;
 
     DotAreaGameManager0113 gameMgr;
     DotAreaScripts game;
 
+    //==========lifeCtrl==========
+    public GameObject[] life;
+    public Sprite lifeFul,lifeEpt;
+
     public void Init(DotAreaScripts game)
     {
         this.game = game;
     }
-
 
     void Start()
     {
@@ -46,15 +52,25 @@ public class DotAreaUICtrl0113 : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            Debug.Log("偵測");
             if (gameMgr.state == GameState.Playing) ShowPausedMenu();
             else if (gameMgr.state == GameState.Paused) HidePausedMenu();
         }
+         
+
     }
     //======外部呼叫======
     //數值
     public void ShowLifeTxt(int value)
     {
-        lifeTxt.text = "生命 : " + value;
+        if (value == 3)
+        {
+            for (int i = 0; i < value; i++) life[i].GetComponent<Image>().sprite = lifeFul;
+        }
+        else
+        {
+            for (int i = value; i <3 ; i++) life[i].GetComponent<Image>().sprite = lifeEpt;
+        }
     }
     public void ShowAchieveTxt(float value)
     {
@@ -64,6 +80,7 @@ public class DotAreaUICtrl0113 : MonoBehaviour
     public void ShowPassedMenu()
     {
         passedPanel.SetActive(true);
+        StartCoroutine(TextFlash(passedText));
     }
     public void HidePassedMenu()
     {
@@ -124,16 +141,26 @@ public class DotAreaUICtrl0113 : MonoBehaviour
 
     void ShowStateTxt()
     {
-        lifeTxt.gameObject.SetActive(true);
-        percentTxt.gameObject.SetActive(true);
+        lifePanel.gameObject.SetActive(true);
+        percentPanel.gameObject.SetActive(true);
     }
     void HideStateTxt()
     {
-        lifeTxt.gameObject.SetActive(false);
-        percentTxt.gameObject.SetActive(false);
+        lifePanel.gameObject.SetActive(false);
+        percentPanel.gameObject.SetActive(false);
     }
 
-    
+    //text閃爍效果
+    IEnumerator TextFlash(GameObject obj)
+    {
+        obj.SetActive(true);
+        while (passedPanel)
+        {
+            obj.SetActive(!obj.activeSelf);
+            yield return new WaitForSeconds(0.7f);
+        }
+        obj.SetActive(false);
+    }
 
     //=========button呼叫=========
 
