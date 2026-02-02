@@ -146,7 +146,7 @@ public class PlayerCtrl0113 : MonoBehaviour
         gameMgr.LostLife();
         grid.ClearAllLine();
 
-        game.UI.ShowLifeTxt(gameMgr.playerLife);
+        game.UI.ShowLifeTxt();
     }
 
 

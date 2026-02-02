@@ -92,6 +92,7 @@ public class DotAreaGameManager0113 : MonoBehaviour
     public void ResetLevel()
     {
         playerLife = 3;
+        game.UI.ShowLifeTxt();
         game.grid.filledCount = 0;
         CountPercent();
 

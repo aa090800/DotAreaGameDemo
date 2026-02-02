@@ -20,7 +20,7 @@ public class DotAreaScripts : MonoBehaviour
         LoadLevel();
 
         UI.Init(this);
-        UI.ShowLifeTxt(game.playerLife);
+        UI.ShowLifeTxt();
         UI.ShowAchieveTxt(game.achievedCount);
 
 

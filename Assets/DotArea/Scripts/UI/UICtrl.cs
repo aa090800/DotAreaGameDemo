@@ -39,11 +39,12 @@ public class DotAreaUICtrl0113 : MonoBehaviour
     public void Init(DotAreaScripts game)
     {
         this.game = game;
+        gameMgr = DotAreaGameManager0113.Instance;
     }
 
     void Start()
     {
-        gameMgr = DotAreaGameManager0113.Instance;
+        
         ShowStartMenu();
         HideStateTxt();
     }
@@ -61,15 +62,16 @@ public class DotAreaUICtrl0113 : MonoBehaviour
     }
     //======¥~³¡©I¥s======
     //¼Æ­È
-    public void ShowLifeTxt(int value)
+    public void ShowLifeTxt()
     {
-        if (value == 3)
+        
+        if (gameMgr.playerLife == 3)
         {
-            for (int i = 0; i < value; i++) life[i].GetComponent<Image>().sprite = lifeFul;
+            for (int i = 0; i < 3; i++) life[i].GetComponent<Image>().sprite = lifeFul;
         }
         else
         {
-            for (int i = value; i <3 ; i++) life[i].GetComponent<Image>().sprite = lifeEpt;
+            for (int i = gameMgr.playerLife; i <3 ; i++) life[i].GetComponent<Image>().sprite = lifeEpt;
         }
     }
     public void ShowAchieveTxt(float value)

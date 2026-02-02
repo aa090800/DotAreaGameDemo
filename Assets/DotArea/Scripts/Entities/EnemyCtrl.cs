@@ -57,7 +57,7 @@ public class EnemyCtrl0113 : MonoBehaviour
         {
             game.player.TouchLine(game.player.StartDrawingPos);
 
-            game.UI.ShowLifeTxt(gameMgr.playerLife);
+            game.UI.ShowLifeTxt();
         }
 
         gridPos = target;
