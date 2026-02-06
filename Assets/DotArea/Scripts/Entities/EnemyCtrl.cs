@@ -2,23 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyCtrl0113 : MonoBehaviour
+public class EnemyCtrl : MonoBehaviour
 {
     public Vector2Int MoveWay;
     public Vector2Int gridPos;//EnemyªºgridPos
     float MovingTimer;
 
     //DotAreaGameManager0113 game;
-    DotAreaGridManager0113 grid;
+    DotAreaGridManager grid;
     DotAreaScripts game;
-    DotAreaGameManager0113 gameMgr;
+    DotAreaGameManager gameMgr;
 
-    public void Init(DotAreaGridManager0113 gridMgr, DotAreaScripts game)
+    public void Init(DotAreaGridManager gridMgr, DotAreaScripts game)
     {
         grid = gridMgr;
         this.game = game;
 
-        gameMgr = DotAreaGameManager0113.Instance;
+        gameMgr = DotAreaGameManager.Instance;
     }
 
     // Update is called once per frame
@@ -57,7 +57,7 @@ public class EnemyCtrl0113 : MonoBehaviour
         {
             game.player.TouchLine(game.player.StartDrawingPos);
 
-            game.UI.ShowLifeTxt();
+            game.UI.RefreshLifeTxt();
         }
 
         gridPos = target;

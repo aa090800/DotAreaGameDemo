@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class DotAreaScripts : MonoBehaviour
 {
-    public DotAreaGridManager0113 grid;
-    public PlayerCtrl0113 player;
-    public EnemyCtrl0113 enemy;
-    public DotAreaUICtrl0113 UI;
-    DotAreaGameManager0113 game;
+    public DotAreaGridManager grid;
+    public PlayerCtrl player;
+    public EnemyCtrl enemy;
+    public DotAreaUICtrl UI;
+    public HealItemCtrl healItem;
+    DotAreaGameManager game;
 
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
+    public GameObject HealthItemPrefab;
     public List<GameObject> enemiesObj = new List<GameObject>();
 
     // Start is called before the first frame update
@@ -20,7 +22,7 @@ public class DotAreaScripts : MonoBehaviour
         LoadLevel();
 
         UI.Init(this);
-        UI.ShowLifeTxt();
+        UI.RefreshLifeTxt();
         UI.ShowAchieveTxt(game.achievedCount);
 
 
@@ -29,23 +31,24 @@ public class DotAreaScripts : MonoBehaviour
     //讀取關卡資料
     public void LoadLevel()
     {
-        game = DotAreaGameManager0113.Instance;
+        game = DotAreaGameManager.Instance;
         game.Init(this);
 
         LevelData level = game.CurrentLevel;
         grid.InitGrid(level);//初始化
 
         GameObject playerObj = Instantiate(PlayerPrefab);
-        player = playerObj.GetComponent<PlayerCtrl0113>();
+        player = playerObj.GetComponent<PlayerCtrl>();
         player.Init(grid, this);
         player.gridPos = level.playerStart;
         player.transform.position = grid.GridToWorldPos(player.gridPos);
 
 
+        //enemy生成附值
         foreach (var enemyData in level.enemies)
         {
             GameObject enemyObj = Instantiate(EnemyPrefab);
-            enemy = enemyObj.GetComponent<EnemyCtrl0113>();
+            enemy = enemyObj.GetComponent<EnemyCtrl>();
             enemy.Init(grid, this);
             enemy.gridPos = enemyData.startPos;
             enemy.MoveWay = enemyData.startDir;

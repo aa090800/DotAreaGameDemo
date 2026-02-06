@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCtrl0113 : MonoBehaviour
+public class PlayerCtrl : MonoBehaviour
 {
     bool Moving;
     bool Drawing;
@@ -15,15 +15,15 @@ public class PlayerCtrl0113 : MonoBehaviour
 
 
     DotAreaScripts game;
-    DotAreaGridManager0113 grid;
-    DotAreaGameManager0113 gameMgr;
+    DotAreaGridManager grid;
+    DotAreaGameManager gameMgr;
 
-    public void Init(DotAreaGridManager0113 gridMgr, DotAreaScripts game)
+    public void Init(DotAreaGridManager gridMgr, DotAreaScripts game)
     {
         grid = gridMgr;
         this.game = game;
 
-        gameMgr = DotAreaGameManager0113.Instance;
+        gameMgr = DotAreaGameManager.Instance;
     }
 
     // Update is called once per frame
@@ -146,7 +146,7 @@ public class PlayerCtrl0113 : MonoBehaviour
         gameMgr.LostLife();
         grid.ClearAllLine();
 
-        game.UI.ShowLifeTxt();
+        game.UI.RefreshLifeTxt();
     }
 
 
@@ -168,6 +168,7 @@ public class PlayerCtrl0113 : MonoBehaviour
         StartMove(Vector2Int.right);
     }
 
+    //eventÅýUI©I¥s¥Î
     public static System.Action OnMoveLeft,OnMoveRight,OnMoveUp,OnMoveDown;
     private void OnEnable()
     {

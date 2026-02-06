@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum GameState { MainMenu, Playing, Paused, Passed, GameOver }
-public class DotAreaGameManager0113 : MonoBehaviour
+public class DotAreaGameManager : MonoBehaviour
 {
     public List<LevelData> levels;
     public int currentLevelIndex;
@@ -12,12 +12,15 @@ public class DotAreaGameManager0113 : MonoBehaviour
 
     DotAreaScripts game;
 
-    public static DotAreaGameManager0113 Instance;
+    public static DotAreaGameManager Instance;
     public GameState state;
 
     public float achievedCount;
+    public int maxPlayerLife = 3;
     public int playerLife = 3;
     public float passRequirement = 70f;
+
+    public bool isCheating;
 
     public void Init(DotAreaScripts game)
     {
@@ -42,6 +45,7 @@ public class DotAreaGameManager0113 : MonoBehaviour
                 NextLevel();
             }
         }
+        SpawnHealthItem();
     }
     public void ChangeState(GameState newState)
     {
@@ -92,7 +96,7 @@ public class DotAreaGameManager0113 : MonoBehaviour
     public void ResetLevel()
     {
         playerLife = 3;
-        game.UI.ShowLifeTxt();
+        game.UI.RefreshLifeTxt();
         game.grid.filledCount = 0;
         CountPercent();
 
@@ -107,4 +111,33 @@ public class DotAreaGameManager0113 : MonoBehaviour
         }
         game.enemiesObj.Clear();
     }
+
+    float spawnTimer = 0;
+    public int totalHeart = 0;
+    //======生成回血道具=======
+    public void SpawnHealthItem()
+    {
+        if (!isCheating) return;
+
+        spawnTimer += Time.deltaTime;
+        if (spawnTimer >= 0.5f)
+        {
+            spawnTimer = 0;
+            if (totalHeart < 100)
+            {
+                int x = Random.Range(0, levels[currentLevelIndex].width);
+                int y = Random.Range(0, levels[currentLevelIndex].height);
+                Vector2Int pos = new Vector2Int(x, y);
+
+                if (game.grid.HealthItemCheck(pos))                 
+                {
+                    totalHeart++;
+                    GameObject go = Instantiate(game.HealthItemPrefab);
+                    go.GetComponent<HealItemCtrl>().Init(game);
+                    go.transform.position = game.grid.GridToWorldPos(pos);
+                }
+            }
+        }
+    }
+    
 }

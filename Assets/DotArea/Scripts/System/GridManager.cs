@@ -7,7 +7,7 @@ public enum CellState { Empty, Filled, Line, Wall }
 //line->wall 初始黑線也是wall
 
 
-public class DotAreaGridManager0113 : MonoBehaviour
+public class DotAreaGridManager : MonoBehaviour
 {
     public int width = 60;
     public int height = 40;
@@ -19,7 +19,7 @@ public class DotAreaGridManager0113 : MonoBehaviour
 
     public CellState[,] gridData;
     Dictionary<Vector2Int, GameObject> SpawnedCell = new Dictionary<Vector2Int, GameObject>();
-    DotAreaGameManager0113 gameMgr;
+    DotAreaGameManager gameMgr;
 
     Vector2 StartPos;
 
@@ -30,7 +30,7 @@ public class DotAreaGridManager0113 : MonoBehaviour
         height = data.height;
                
 
-        gameMgr = DotAreaGameManager0113.Instance;
+        gameMgr = DotAreaGameManager.Instance;
         gameMgr.passRequirement = data.passPercent;
 
         StartPos = new Vector2(-cellSize * width / 2, -cellSize * height / 2);
@@ -211,5 +211,11 @@ public class DotAreaGridManager0113 : MonoBehaviour
             SpawnedCell.Remove(pos);
 
         }
+    }
+
+    public bool HealthItemCheck(Vector2Int pos)
+    {
+        if (gridData[pos.x, pos.y] == CellState.Empty) return true;
+        else return false;
     }
 }

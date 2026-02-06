@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 //reume回到遊戲/restart重新導入關卡資料/quit離開遊戲->通關時->level++->新關卡->若通關最後一關顯示ClearAllLevel
 //死亡時->()死亡menu
 
-public class DotAreaUICtrl0113 : MonoBehaviour
+public class DotAreaUICtrl : MonoBehaviour
 {
     public GameObject startPanel;
     public GameObject pausedPanel;
@@ -20,6 +20,8 @@ public class DotAreaUICtrl0113 : MonoBehaviour
     public GameObject passedText;
     public GameObject clearPanel;
     public GameObject failedPanel;
+
+    public GameObject cheatToggle;
 
     public GameObject ArrowPanel;
     public GameObject ThanksPanel;
@@ -29,21 +31,23 @@ public class DotAreaUICtrl0113 : MonoBehaviour
     public GameObject percentPanel;
     public TextMeshProUGUI percentTxt;
 
-    DotAreaGameManager0113 gameMgr;
+    DotAreaGameManager gameMgr;
     DotAreaScripts game;
 
     //==========lifeCtrl==========
     public GameObject[] life;
-    public Sprite lifeFul,lifeEpt;
+    public Sprite lifeFul,lifeEpt,lifeCheat;
+    bool isCheat;
 
     public void Init(DotAreaScripts game)
     {
         this.game = game;
-        gameMgr = DotAreaGameManager0113.Instance;
+        gameMgr = DotAreaGameManager.Instance;
     }
 
     void Start()
     {
+        
         
         ShowStartMenu();
         HideStateTxt();
@@ -57,17 +61,19 @@ public class DotAreaUICtrl0113 : MonoBehaviour
             if (gameMgr.state == GameState.Playing) ShowPausedMenu();
             else if (gameMgr.state == GameState.Paused) HidePausedMenu();
         }
-         
+        
 
     }
     //======外部呼叫======
     //數值
-    public void ShowLifeTxt()
+    public void RefreshLifeTxt()
     {
-        
+        Sprite HeartSprite;
+        if (isCheat) { HeartSprite = lifeCheat; }
+        else HeartSprite = lifeFul;
         if (gameMgr.playerLife == 3)
         {
-            for (int i = 0; i < 3; i++) life[i].GetComponent<Image>().sprite = lifeFul;
+            for (int i = 0; i < 3; i++) life[i].GetComponent<Image>().sprite = HeartSprite;
         }
         else
         {
@@ -111,6 +117,15 @@ public class DotAreaUICtrl0113 : MonoBehaviour
     {
         ThanksPanel.SetActive(true);
     }
+
+    //toggle呼叫
+
+    public void GlowLiftPanel(bool check)
+    {
+        isCheat = check;
+        RefreshLifeTxt();
+        Debug.Log(isCheat);
+    }
     //======內部呼叫======
     void ShowStartMenu()
     {
@@ -144,13 +159,16 @@ public class DotAreaUICtrl0113 : MonoBehaviour
     void ShowStateTxt()
     {
         lifePanel.gameObject.SetActive(true);
+        cheatToggle.gameObject.SetActive(true);
         percentPanel.gameObject.SetActive(true);
     }
     void HideStateTxt()
     {
         lifePanel.gameObject.SetActive(false);
+        cheatToggle.gameObject.SetActive(false);
         percentPanel.gameObject.SetActive(false);
     }
+    
 
     //text閃爍效果
     IEnumerator TextFlash(GameObject obj)
@@ -192,8 +210,10 @@ public class DotAreaUICtrl0113 : MonoBehaviour
     {
         Application.Quit();
     }
-    public void PressUpBtn() { PlayerCtrl0113.OnMoveUp?.Invoke(); }
-    public void PressDownBtn() { PlayerCtrl0113.OnMoveDown?.Invoke(); }
-    public void PressRightBtn() { PlayerCtrl0113.OnMoveRight?.Invoke(); }
-    public void PressLeftBtn() { PlayerCtrl0113.OnMoveLeft?.Invoke(); }
+
+    //搖桿button呼叫玩家移動
+    public void PressUpBtn() { PlayerCtrl.OnMoveUp?.Invoke(); }
+    public void PressDownBtn() { PlayerCtrl.OnMoveDown?.Invoke(); }
+    public void PressRightBtn() { PlayerCtrl.OnMoveRight?.Invoke(); }
+    public void PressLeftBtn() { PlayerCtrl.OnMoveLeft?.Invoke(); }
 }
